@@ -1,5 +1,6 @@
 const User = require('../model/userModel');//used for import user model
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');//used for import bcrypt
+const jwt = require('jsonwebtoken');//used for import JWT
 
 //used for register new user 
 const registerUserController = async (req, res, next) => {
@@ -34,7 +35,13 @@ const loginUserController = async (req, res, next) => {
                     res.send({ message: 'Error occured!' })
                 }
                 if (result) {
-                    res.send({ message: 'Login successful!' })
+                    let token = jwt.sign(
+                        { email: query.email, id: query._id },
+                        'SECRET',
+                        { expiresIn: '1h' }
+                    );//create token using JWT
+
+                    res.send({ message: 'Login successful!', token })
                 } else {
                     res.send({ message: 'Login faild. Password dosent match!' })
                 }
