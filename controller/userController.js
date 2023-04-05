@@ -1,6 +1,7 @@
 const User = require('../model/userModel');//used for import user model
 const bcrypt = require('bcrypt');//used for import bcrypt
 const jwt = require('jsonwebtoken');//used for import JWT
+require('dotenv').config();//used for reading .env file
 
 //used for register new user 
 const registerUserController = async (req, res, next) => {
@@ -35,11 +36,10 @@ const loginUserController = async (req, res, next) => {
                     res.send({ message: 'Error occured!' })
                 }
                 if (result) {
-                    let token = jwt.sign(
-                        { email: query.email, id: query._id },
-                        'SECRET',
+                    //create token using JWT
+                    let token = jwt.sign({ email: query.email, id: query._id }, process.env.SECRET_TOKEN,
                         { expiresIn: '1h' }
-                    );//create token using JWT
+                    );
 
                     res.send({ message: 'Login successful!', token })
                 } else {
