@@ -1,51 +1,64 @@
 const User = require('../model/userModel');//used for import user model
+const bcrypt = require('bcrypt');
 
-//used for creating new user
-const postUserController = async (req, res, next) => {
-    // const result = await new User(req.body).save();
-    let data = new User(req.body);
-    const result = await data.save();
-    res.send(result);
+//used for register new user 
+const registerUserController = async (req, res, next) => {
+    try {
+        bcrypt.hash(req.body.password, 10, async (err, hash) => {
+            if (err) {
+                res.send(err)
+            }
+            let data = new User({
+                email: req.body.email,
+                password: hash
+            });
+            const result = await data.save();
+            res.send(result);
+        })
+
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+//used for login user 
+const loginUserController = async (req, res, next) => {
+    try {
+        let email = req.body.email;
+        let password = req.body.password;
+        let query = await User.findOne({ email });
+
+        if (query) {
+            bcrypt.compare(password, query.password, (err, result) => {
+                if (err) {
+                    res.send({ message: 'Error occured!' })
+                }
+                if (result) {
+                    res.send({ message: 'Login successful!' })
+                } else {
+                    res.send({ message: 'Login faild. Password dosent match!' })
+                }
+            })
+        } else {
+            res.send({ message: 'User not found!' })
+        }
+    } catch (error) {
+        console.log(error.message)
+    }
 }
 
 //used for getting user collection
 const getUserController = async (req, res, next) => {
-    const userData = await User.find({})
-    res.send(userData)
-}
-
-//used for getting single user and update his data
-const putUserController = async (req, res, nex) => {
-    const findUserName = req.params.name;
-    const changedUserName = req.body.name;
-
-    const query = await User.findOne({
-        name: findUserName
-    })
-
-    const changedUserData = await User.findOneAndUpdate(query, {
-        $set: { name: changedUserName }
-    })
-
-    res.send('mesg: data chaged successfully!')
-}
-
-//used for getting single user and delete his data
-const deleteUserController = async (req, res, nex) => {
-    const findUserName = req.params.name;
-
-    const query = await User.findOne({
-        name: findUserName
-    })
-
-    const deletedUserData = await User.deleteOne(query)
-
-    res.send('mesg: data deleted successfully!')
+    try {
+        const userData = await User.find({})
+        res.send(userData)
+    } catch (error) {
+        console.log(error.message)
+    }
 }
 
 module.exports = {
-    getUserController,
-    postUserController,
-    putUserController,
-    deleteUserController
+    registerUserController,
+    loginUserController,
+    getUserController
 }

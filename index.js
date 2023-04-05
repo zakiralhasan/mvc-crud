@@ -5,12 +5,14 @@ mongoose.connect('mongodb://localhost:27017/ecommerce');//used for established c
 
 const port = process.env.PORT || 5000;
 
-const userRoute = require('./routes/userRoute'); //used for import user route
+const userRoute = require('./routes/userRoute');//used for import user route
+const contactRoute = require('./routes/contactRoute'); //used for import contact route
 
 
 app.use(express.json());
 
-app.use('/user', userRoute) //used for user route to do CRUD operation on user collections
+app.use('/user', userRoute);//used for user route to register, login, get user list etc.
+app.use('/contact', contactRoute) //used for user contact route to do CRUD operation on user collections
 
 
 

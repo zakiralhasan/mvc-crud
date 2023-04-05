@@ -1,9 +1,12 @@
 const mongoose = require('mongoose');//used for import mongoose
 
 //create user schema
-const userSchema = mongoose.Schema({
-    name: String,
-    age: Number
+const userSchema = new mongoose.Schema({
+    email: {
+        type: String,
+        require: true
+    },
+    password: String
 })
 
-module.exports = mongoose.model('user', userSchema);
+module.exports = mongoose.model('user', userSchema)

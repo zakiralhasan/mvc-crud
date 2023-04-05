@@ -2,10 +2,8 @@ const express = require('express');//used for import express
 const userRouter = express.Router();//used for creating user route
 const userController = require('../controller/userController');//import user controller
 
-userRouter.post("/", userController.postUserController);//used for POST operation
-userRouter.get('/', userController.getUserController);//used for GET operation
-userRouter.put('/:name', userController.putUserController);//used for PUT operation
-userRouter.delete('/:name', userController.deleteUserController);//used for DELETE operation
-
+userRouter.post('/register', userController.registerUserController);//used for register new user
+userRouter.post('/login', userController.loginUserController);//used for login new user
+userRouter.get('/', userController.getUserController);//used for get user list
 
 module.exports = userRouter;
